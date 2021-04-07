@@ -14,7 +14,6 @@ function Vutur() {
 			el.setAttribute("data-v-show-display-mode", getComputedStyle(el).getPropertyValue("display"));
 		};
 
-
 		if (safeEval(`return ${el.dataset.vShow}`)) {
 			el.style.display = el.dataset.vShowDisplayMode;
 		} else {
