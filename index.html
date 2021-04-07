@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Vue rewrite</title>
 </head>
+
 <body>
 	<h1 data-v-show="hello">hi</h1>
 	<p data-v-if="hello">pociongi</p>
+	<p data-v-text="msg"></p>
+	<p data-v-html="msg"></p>
+	<div data-v-once>
+		<p data-v-html="msg"></p>
+	</div>
+	<button data-v-on="click:alert('haha yes');">kilk me</button>
 	<script src="./script.js"></script>
 	<script defer>
 		"use strict";
 
-		define("hello", true);
+		Vutur.define({
+			data: {
+				hello: true,
+				msg: "<b>Lorem ipsum</b> dolor sit amet consectetur adipisicing elit. Animi ipsum voluptatum ullam at facilis quis alias optio id explicabo molestiae dignissimos tempora in natus ducimus unde consequuntur vitae, ut cupiditate!"
+			}
+		});
 
 		Vutur();
 	</script>
 </body>
+
 </html>

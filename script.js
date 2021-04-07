@@ -3,6 +3,7 @@
 let Vutur__state = [];
 
 function Vutur() {
+	const attributes = ["show", "if", "text", "html", "cloak", "on"];
 	function safeEval(str) {
 		return new Function(str)();
 	};
@@ -36,6 +37,32 @@ function Vutur() {
 			el.outerHTML = Vutur__state[el.dataset.vIfStateId].html;
 		};
 	});
+
+	$("[data-v-text]").forEach(el => {
+		el.innerText = safeEval(`return ${el.dataset.vText}`);
+	});
+
+	$("[data-v-html]").forEach(el => {
+		el.innerHTML = safeEval(`return ${el.dataset.vHtml}`);
+	});
+
+	$("[data-v-cloak]").forEach(el => {
+		el.removeAttribute("data-v-cloak");
+	});
+
+	$("[data-v-on]").forEach(el => {
+		const params = el.dataset.vOn.split(":", 2);
+		if (!el.dataset.vOnSet) {
+			el.setAttribute("data-v-on-set", params[0]);
+			el.addEventListener(params[0], new Function(params[1]));
+		};
+	});
+
+	$("[data-v-once] *").forEach(el => {
+		attributes.forEach(element => {
+			el.removeAttribute(`data-v-${element}`);
+		});
+	});
 };
 
 function define(varName, value) {
@@ -55,9 +82,9 @@ function define(varName, value) {
 Vutur.define = function (obj) {
 	// eslint ma depresje jak dam ; w ifie
 	// eslint-disable-next-line guard-for-in
-	for (let key in obj) {
-		if (Object.prototype.hasOwnProperty.call(obj, key)) {
-			define(key, obj[key]);
+	for (let key in obj.data) {
+		if (Object.prototype.hasOwnProperty.call(obj.data, key)) {
+			define(key, obj.data[key]);
 		};
 	};
 };
