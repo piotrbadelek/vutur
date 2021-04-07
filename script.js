@@ -1,5 +1,7 @@
 "use strict";
 
+let Vutur__state = [];
+
 function Vutur() {
 	function safeEval(str) {
 		return new Function(str)();
@@ -22,8 +24,16 @@ function Vutur() {
 	});
 
 	$("[data-v-if]").forEach(el => {
+		if (!el.dataset.vIfStateId && !el.dataset.vCollapsed) {
+			el.setAttribute("data-v-if-state-id", Vutur__state.length);
+			Vutur__state.push({
+				html: el.outerHTML
+			});
+		};
 		if (!safeEval(`return ${el.dataset.vIf}`)) {
-			el.remove();
+			el.outerHTML = `<div data-v-if="${el.dataset.vIf}" data-v-if-state-id="${el.dataset.vIfStateId}" data-v-collapsed="yes"></div>`;
+		} else if (el.dataset.vCollapsed) {
+			el.outerHTML = Vutur__state[el.dataset.vIfStateId].html;
 		};
 	});
 };
@@ -42,7 +52,7 @@ function define(varName, value) {
 	});
 };
 
-Vutur.new = function (obj) {
+Vutur.define = function (obj) {
 	// eslint ma depresje jak dam ; w ifie
 	// eslint-disable-next-line guard-for-in
 	for (let key in obj) {
