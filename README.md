@@ -138,7 +138,7 @@ This will repeat the element based on how much elements in the array are there; 
 The directives inside will be run only once.
 
 ## Sizes
-Vutur is very liteheight. It's only 3.59KB when minified, 1155 bytes when gzipped and only 994 bytes with brotli! Vue on the other hand, weights 22.9
+Vutur is very liteweight. It's only 3.59KB when minified, 1155 bytes when gzipped and only 994 bytes with brotli! Vue on the other hand, weights 22.9
 kB gzipped and 63.7 kB minified.
 
 ## v1 Roadmap
