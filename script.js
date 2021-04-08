@@ -12,6 +12,19 @@ function Vutur() {
 		return document.querySelectorAll(selector);
 	};
 
+	$("input[data-v-model], textarea[data-v-model]").forEach(el => {
+		if (!el.dataset.vModelHandled) {
+			// eslint-disable-next-line no-use-before-define
+			define(el.dataset.vModel, el.value);
+			el.addEventListener("input", Vutur);
+			el.setAttribute("data-v-model-handled", el.dataset.vModel);
+		} else {
+			if (window[el.dataset.vModel] !== el.value) {
+				window[el.dataset.vModel] = el.value;
+			};
+		};
+	});
+
 	$("[data-v-show]").forEach(el => {
 		if (!el.dataset.vShowDisplayMode) {
 			el.setAttribute("data-v-show-display-mode", getComputedStyle(el).getPropertyValue("display"));
