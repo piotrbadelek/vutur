@@ -11,6 +11,7 @@
 <body>
 	<h1 data-v-show="hello">hi</h1>
 	<p data-v-if="hello">pociongi</p>
+	<p data-v-else="hello">cement</p>
 	<p data-v-text="msg"></p>
 	<p data-v-html="msg"></p>
 	<div data-v-once>
@@ -19,17 +20,20 @@
 	<input type="text" data-v-model="kasztan">
 	<p>hello <span data-v-text="kasztan"></span></p>
 	<button data-v-on="click:alert('haha yes');">kilk me</button>
+	<ul>
+		<li data-v-for="arrej">{{ el }}</li>
+	</ul>
 	<script src="./script.js"></script>
 	<script defer>
 		"use strict";
 
-		Vutur.define({
+		Vutur.extend({
 			data: {
+				arrej: ["cement", "kasztany", "chicken", "h", "content"],
 				hello: true,
 				msg: "<b>Lorem ipsum</b> dolor sit amet consectetur adipisicing elit. Animi ipsum voluptatum ullam at facilis quis alias optio id explicabo molestiae dignissimos tempora in natus ducimus unde consequuntur vitae, ut cupiditate!"
 			}
 		});
-
 		Vutur();
 	</script>
 </body>

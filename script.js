@@ -1,9 +1,12 @@
 "use strict";
 
-let Vutur__state = [];
+let Vutur__state = {
+	dom: [],
+	lengths: {}
+};
 
 function Vutur() {
-	const attributes = ["show", "if", "text", "html", "cloak", "on"];
+	const attributes = ["show", "if", "text", "html", "cloak", "on", "once"];
 	function safeEval(str) {
 		return new Function(str)();
 	};
@@ -39,15 +42,29 @@ function Vutur() {
 
 	$("[data-v-if]").forEach(el => {
 		if (!el.dataset.vIfStateId && !el.dataset.vCollapsed) {
-			el.setAttribute("data-v-if-state-id", Vutur__state.length);
-			Vutur__state.push({
+			el.setAttribute("data-v-if-state-id", Vutur__state.dom.length);
+			Vutur__state.dom.push({
 				html: el.outerHTML
 			});
 		};
 		if (!safeEval(`return ${el.dataset.vIf}`)) {
 			el.outerHTML = `<div data-v-if="${el.dataset.vIf}" data-v-if-state-id="${el.dataset.vIfStateId}" data-v-collapsed="yes"></div>`;
 		} else if (el.dataset.vCollapsed) {
-			el.outerHTML = Vutur__state[el.dataset.vIfStateId].html;
+			el.outerHTML = Vutur__state.dom[el.dataset.vIfStateId].html;
+		};
+	});
+
+	$("[data-v-if]+[data-v-else]").forEach(el => {
+		if (!el.dataset.vElseStateId && !el.dataset.vCollapsed) {
+			el.setAttribute("data-v-else-state-id", Vutur__state.dom.length);
+			Vutur__state.dom.push({
+				html: el.outerHTML
+			});
+		};
+		if (safeEval(`return ${el.dataset.vElse}`)) {
+			el.outerHTML = `<div data-v-else="${el.dataset.vElse}" data-v-else-state-id="${el.dataset.vElseStateId}" data-v-collapsed="yes"></div>`;
+		} else if (el.dataset.vCollapsed) {
+			el.outerHTML = Vutur__state.dom[el.dataset.vElseStateId].html;
 		};
 	});
 
@@ -71,10 +88,44 @@ function Vutur() {
 		};
 	});
 
+	$("[data-v-for]").forEach(el => {
+		for (let i = 0; i < window[el.dataset.vFor].length; i++) {
+			let content = el.innerHTML.replaceAll("{{ el }}", window[el.dataset.vFor][i]);
+			let tempEl = el.cloneNode(true);
+			tempEl.setAttribute("data-v-for-associate", el.dataset.vFor);
+			tempEl.removeAttribute("data-v-for");
+			tempEl.innerHTML = content;
+			el.parentNode.insertBefore(tempEl, el);
+		};
+		Vutur__state.lengths[el.dataset.vFor] = window[el.dataset.vFor].length;
+		el.setAttribute("data-v-for-source", el.dataset.vFor);
+		el.setAttribute("data-v-for-display-mode", getComputedStyle(el).getPropertyValue("display"));
+		el.removeAttribute("data-v-for");
+		el.style.display = "none";
+	});
+
+	$("[data-v-for-source]").forEach(el => {
+		if (window[el.dataset.vForSource].length !== Vutur__state.lengths[el.dataset.vForSource]) {
+			document.querySelectorAll(`[data-v-for-associate="${el.dataset.vForSource}"]`).forEach(oldEl => oldEl.remove());
+			for (let i = 0; i < window[el.dataset.vForSource].length; i++) {
+				let content = el.innerHTML.replaceAll("{{ el }}", window[el.dataset.vForSource][i]);
+				let tempEl = el.cloneNode(true);
+				tempEl.innerHTML = content;
+				tempEl.style.display = el.dataset.vForDisplayMode;
+				el.parentNode.insertBefore(tempEl, el);
+			};
+			Vutur__state.lengths[el.dataset.vForSource] = window[el.dataset.vForSource].length;
+		};
+	});
+
 	$("[data-v-once] *").forEach(el => {
 		attributes.forEach(element => {
 			el.removeAttribute(`data-v-${element}`);
 		});
+	});
+
+	$("[data-v-once]").forEach(el => {
+		el.removeAttribute("data-v-once");
 	});
 };
 
@@ -92,7 +143,7 @@ function define(varName, value) {
 	});
 };
 
-Vutur.define = function (obj) {
+Vutur.extend = function (obj) {
 	// eslint ma depresje jak dam ; w ifie
 	// eslint-disable-next-line guard-for-in
 	for (let key in obj.data) {
@@ -100,4 +151,10 @@ Vutur.define = function (obj) {
 			define(key, obj.data[key]);
 		};
 	};
+}; 
+
+Vutur.version = {
+	version: "0.1",
+	fullName: "0.1 - Granite Peak",
+	releaseName: "Granite Peak"
 };
