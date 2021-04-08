@@ -23,6 +23,9 @@
 	<ul>
 		<li data-v-for="arrej">{{ el }}</li>
 	</ul>
+	<label for="myInput">Enter your name:</label>
+	<input type="text" name="myInput" data-v-model="myName">
+	<p>Hello, <span data-v-text="myName"></span>!</p>
 	<script src="./script.js"></script>
 	<script defer>
 		"use strict";
