@@ -142,7 +142,7 @@ Vutur is very liteweight. It's only 3.59KB when minified, 1155 bytes when gzippe
 kB gzipped and 63.7 kB minified.
 
 ## v1 Roadmap
-- Implement all of Vue.js directives
+- Implement all of Vue.js directives & API
 - Add basic component support
 - Make the `data-v-for` attribute work more like Vue's and Apline's `v-for` and `x-for`
 
